@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      String   @default("owner")
+  createdAt DateTime @default(now())
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String
+  tech        String[]
+  createdAt   DateTime @default(now())
+
+  // GitHub sync
+  githubOwner String?
+  githubRepo  String?
+  githubUrl   String?
+  hidden      Boolean  @default(false)
+
+  // Public "Explore" button (deployment URL controlled from admin)
+  exploreUrl  String?
+
+  @@unique([githubOwner, githubRepo])
+}
+
+model BillingRecord {
+  id         String   @id @default(cuid())
+  userId     String
+  usage      Int
+  costCents  Int
+  recordedAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model ApiLog {
+  id        String   @id @default(cuid())
+  route     String
+  method    String
+  status    Int
+  createdAt DateTime @default(now())
+}

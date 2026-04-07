@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --glass: rgba(255, 255, 255, 0.04);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root.dark {
+  --background: #08090b;
+  --foreground: #e7e7ee;
+  --glass: rgba(255, 255, 255, 0.03);
+}
+
+body {
+  background: radial-gradient(
+      1000px 600px at 10% 10%,
+      rgba(59, 130, 246, 0.06),
+      transparent
+    ),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial;
+}
+
+/* small utilities */
+.bg-foreground {
+  background-color: var(--foreground);
+}
+.text-background {
+  color: var(--background);
+}
+
+/* Tailwind v4 uses `@import "tailwindcss";` (no @tailwind directives). */
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Make anchor jumps land below the fixed top nav */
+section[id] {
+  scroll-margin-top: 104px;
+}
