@@ -96,9 +96,13 @@ export default function AboutShowcase({ bgSrc = "/hero_pic.jpg" }: Props) {
 
       <div className="relative h-[100svh] px-6 sm:px-10">
         <div className="mx-auto max-w-6xl h-full">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center gap-10 h-full">
-            {/* LEFT role */}
-            <div className="text-center lg:text-right">
+          {/*
+            Mobile: roles sit BELOW the image (under the chin)
+            Desktop (lg+): roles sit on left/right of the image
+          */}
+          <div className="grid grid-rows-[1fr_auto] lg:grid-rows-1 lg:grid-cols-[1fr_auto_1fr] items-end lg:items-center gap-6 lg:gap-10 h-full">
+            {/* DESKTOP LEFT role */}
+            <div className="hidden lg:block text-right">
               <div className="font-mono text-2xl sm:text-3xl text-white/95">
                 {leftText || "\u00A0"}
                 {mounted ? (
@@ -114,13 +118,32 @@ export default function AboutShowcase({ bgSrc = "/hero_pic.jpg" }: Props) {
               </div>
             </div>
 
-            {/* CENTER spacer (keeps left/right pushed to edges on large screens) */}
-            <div className="hidden lg:block w-[440px]" />
+            {/* CENTER spacer (image stays centered in both layouts) */}
+            <div className="w-full lg:w-[440px]" />
 
-            {/* RIGHT role */}
-            <div className="text-center lg:text-left">
+            {/* DESKTOP RIGHT role */}
+            <div className="hidden lg:block text-left">
               <div className="font-mono text-2xl sm:text-3xl text-white/95">
                 {rightText || "\u00A0"}
+                {mounted ? (
+                  <motion.span
+                    aria-hidden
+                    className="inline-block ml-1 text-white/70"
+                    animate={{ opacity: [0, 1, 0] }}
+                    transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    |
+                  </motion.span>
+                ) : null}
+              </div>
+            </div>
+
+            {/* MOBILE roles (below image) */}
+            <div className="lg:hidden row-start-2">
+              <div className="flex items-center justify-center gap-2 font-mono text-xl sm:text-2xl text-white/95">
+                <span>{leftText || "\u00A0"}</span>
+                <span className="text-white/60">{rightText ? " " : ""}</span>
+                <span>{rightText || "\u00A0"}</span>
                 {mounted ? (
                   <motion.span
                     aria-hidden

@@ -142,7 +142,7 @@ export default function ContactForm() {
           </div>
         </div>
 
-        <div className="mt-6 flex items-center justify-between gap-4">
+        <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="text-xs text-black/55">
             {state.status === "sent" ? (
               <span className="text-emerald-700">Message sent. Thanks — I’ll reply soon.</span>
@@ -156,7 +156,7 @@ export default function ContactForm() {
           <button
             type="submit"
             disabled={disabled}
-            className="group inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-black text-white px-5 py-3 text-sm hover:bg-black/90 disabled:opacity-60 transition shadow-[0_12px_35px_-20px_rgba(0,0,0,0.55)]"
+            className="group inline-flex w-full sm:w-auto justify-center items-center gap-2 rounded-2xl border border-black/10 bg-black text-white px-5 py-3 text-sm hover:bg-black/90 disabled:opacity-60 transition shadow-[0_12px_35px_-20px_rgba(0,0,0,0.55)]"
           >
             {state.status === "sending" ? "Sending…" : "Send"}
             <span className="text-white/80 group-hover:text-white transition">↗</span>

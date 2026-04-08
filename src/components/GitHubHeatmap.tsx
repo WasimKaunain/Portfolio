@@ -14,9 +14,9 @@ export default function GitHubHeatmap({ username }: { username: string }) {
   function onMove(e: React.MouseEvent<HTMLDivElement>) {
     const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width;
-    const py = (e.clientY - rect.top) / rect.height;
+    const py = (e.clientX - rect.left) / rect.width;
     ry.set((px - 0.5) * 10);
-    rx.set(-(py - 0.5) * 8);
+    rx.set(-(((e.clientY - rect.top) / rect.height) - 0.5) * 8);
   }
 
   function onLeave() {
@@ -33,7 +33,7 @@ export default function GitHubHeatmap({ username }: { username: string }) {
       style={{ transform }}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      className="relative overflow-hidden rounded-[34px] border border-white/12 bg-white/3 backdrop-blur-2xl p-6 md:p-8 shadow-[0_35px_120px_-60px_rgba(0,0,0,0.95)]"
+      className="relative overflow-hidden rounded-[34px] border border-white/12 bg-white/3 backdrop-blur-2xl p-5 sm:p-6 md:p-8 shadow-[0_35px_120px_-60px_rgba(0,0,0,0.95)]"
     >
       {/* glass layers */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -68,13 +68,13 @@ export default function GitHubHeatmap({ username }: { username: string }) {
         <img
           src={src}
           alt={`GitHub contribution chart for ${username}`}
-          className="min-w-[720px] w-full opacity-95"
+          className="min-w-[560px] sm:min-w-[720px] w-full opacity-95"
         />
       </div>
 
       <div className="relative mt-4 flex items-center justify-between text-[11px] text-zinc-500">
         <span className="font-mono">ghchart.rshah.org</span>
-        <span>Hover to tilt</span>
+        <span className="hidden sm:inline">Hover to tilt</span>
       </div>
     </motion.div>
   );
