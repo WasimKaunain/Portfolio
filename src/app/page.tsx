@@ -6,6 +6,7 @@ import ExperienceSection from "@/components/ExperienceSection";
 import ContactSection from "@/components/ContactSection";
 import GitHubHeatmap from "@/components/GitHubHeatmap";
 import Terminal from "@/components/Terminal";
+import ClientOnly from "../components/ClientOnly";
 
 export default function Home() {
   return (
@@ -20,70 +21,72 @@ export default function Home() {
       <TopNav />
 
       <main>
-        {/* Hero is handled internally with per-element gravity items */}
         <HeroFull />
 
-        <section data-gravity-item="1" className="py-16">
-          <div className="max-w-7xl mx-auto px-6">
-            <GitHubHeatmap username="WasimKaunain" />
-          </div>
-        </section>
+        <ClientOnly>
+          <section data-gravity-item="1" className="py-16">
+            <div className="max-w-7xl mx-auto px-6">
+              <GitHubHeatmap username="WasimKaunain" />
+            </div>
+          </section>
 
-        <section data-gravity-item="1" className="py-16" id="terminal">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <div className="text-xs tracking-[0.28em] uppercase text-zinc-400">
-                  Terminal
+          <section data-gravity-item="1" className="py-16" id="terminal">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <div className="text-xs tracking-[0.28em] uppercase text-zinc-400">
+                    Terminal
+                  </div>
+                  <h2 className="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+                    Interactive shell
+                  </h2>
+                  <p className="mt-2 text-sm text-zinc-400">
+                    A tiny command-line UI for navigating the site.
+                  </p>
                 </div>
-                <h2 className="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight text-white">
-                  Interactive shell
-                </h2>
-                <p className="mt-2 text-sm text-zinc-400">
-                  A tiny command-line UI for navigating the site.
-                </p>
-              </div>
-              <div className="text-[11px] font-mono text-zinc-500">
-                try: help
-              </div>
-            </div>
-
-            <div className="mt-6 rounded-[32px] border border-white/10 bg-white/3 backdrop-blur-xl p-5 md:p-6 shadow-2xl">
-              <Terminal />
-            </div>
-          </div>
-        </section>
-
-        <section data-gravity-item="1" id="projects" className="py-20">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <div className="text-xs tracking-[0.28em] uppercase text-zinc-400">
-                  Projects
+                <div className="text-[11px] font-mono text-zinc-500">
+                  try: help
                 </div>
-                <h2 className="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight text-white">
-                  All projects
-                </h2>
-                <p className="mt-2 text-sm text-zinc-400">
-                  Each project takes a full screen. Titles come from repo names;
-                  descriptions are curated in admin.
-                </p>
               </div>
-              <div className="text-[11px] font-mono text-zinc-500">Scroll</div>
-            </div>
 
-            <div className="mt-8">
-              <ProjectsScroll />
+              <div className="mt-6 rounded-[32px] border border-white/10 bg-white/3 backdrop-blur-xl p-5 md:p-6 shadow-2xl">
+                <Terminal />
+              </div>
             </div>
+          </section>
+
+          <section data-gravity-item="1" id="projects" className="py-20">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <div className="text-xs tracking-[0.28em] uppercase text-zinc-400">
+                    Projects
+                  </div>
+                  <h2 className="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+                    All projects
+                  </h2>
+                  <p className="mt-2 text-sm text-zinc-400">
+                    Each project takes a full screen. Titles come from repo names;
+                    descriptions are curated in admin.
+                  </p>
+                </div>
+                <div className="text-[11px] font-mono text-zinc-500">Scroll</div>
+              </div>
+
+              <div className="mt-8">
+                <ProjectsScroll />
+              </div>
+            </div>
+          </section>
+
+          <div data-gravity-item="1">
+            <ExperienceSection />
           </div>
-        </section>
 
-        <div data-gravity-item="1">
-          <ExperienceSection />
-        </div>
-        <div data-gravity-item="1">
-          <ContactSection />
-        </div>
+          <div data-gravity-item="1">
+            <ContactSection />
+          </div>
+        </ClientOnly>
       </main>
     </div>
   );

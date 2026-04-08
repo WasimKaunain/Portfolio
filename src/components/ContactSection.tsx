@@ -23,7 +23,7 @@ export default function ContactSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.65, ease: "easeOut" }}
-          className="mt-8 rounded-3xl border border-white/10 bg-white/3 backdrop-blur-xl p-7 md:p-10 shadow-2xl"
+          className="mt-8 rounded-3xl border border-white/10 bg-slate-900/50 backdrop-blur-xl p-7 md:p-10 shadow-2xl"
         >
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
@@ -42,7 +42,7 @@ export default function ContactSection() {
                 href="https://github.com/WasimKaunain"
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-2xl border border-white/12 bg-white/8 px-5 py-3 text-sm text-white hover:bg-white/12 transition"
+                className="rounded-2xl border border-white/12 bg-slate-800/60 px-5 py-3 text-sm text-white hover:bg-slate-800/80 transition"
               >
                 GitHub
               </a>
@@ -50,7 +50,7 @@ export default function ContactSection() {
                 href="https://www.linkedin.com/in/wasim-konain-a3609925a/"
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-2xl border border-white/12 bg-white/8 px-5 py-3 text-sm text-white hover:bg-white/12 transition"
+                className="rounded-2xl border border-white/12 bg-slate-800/60 px-5 py-3 text-sm text-white hover:bg-slate-800/80 transition"
               >
                 LinkedIn
               </a>

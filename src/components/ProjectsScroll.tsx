@@ -35,20 +35,18 @@ function getPreviewImageSrc(exploreUrl?: string | null) {
   }
 }
 
-const titleStyles = [
-  "text-yellow-300",
-  "text-orange-300",
-  "text-emerald-300",
-  "text-red-300",
-  "text-lime-300",
-  "text-amber-300",
-];
-
-function ProjectGridCard({ p, index }: { p: PublicProject; index: number }) {
+function ProjectGridCard({
+  p,
+  index,
+  mounted,
+}: {
+  p: PublicProject;
+  index: number;
+  mounted: boolean;
+}) {
   const repoName = p.githubRepo ?? p.title;
   const subtitle = p.description || "No description yet. Add one in admin.";
   const accent = accents[index % accents.length];
-  const titleColor = titleStyles[index % titleStyles.length];
 
   const githubHref =
     p.githubUrl && p.githubUrl.startsWith("http")
@@ -61,9 +59,8 @@ function ProjectGridCard({ p, index }: { p: PublicProject; index: number }) {
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.25 }}
+      initial={mounted ? { opacity: 0, y: 12 } : false}
+      animate={mounted ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
       transition={{ duration: 0.55, ease: "easeOut" }}
       className="group relative h-full w-full overflow-hidden rounded-[28px] border border-white/10 bg-white/4 backdrop-blur-xl shadow-[0_25px_120px_-70px_rgba(0,0,0,0.95)]"
     >
@@ -98,11 +95,12 @@ function ProjectGridCard({ p, index }: { p: PublicProject; index: number }) {
               {p.githubOwner && p.githubRepo ? `${p.githubOwner}/${p.githubRepo}` : p.slug}
             </div>
             <h3
-              className={`mt-3 text-[28px] sm:text-[34px] leading-[1.05] font-semibold tracking-tight ${titleColor} drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)] break-words`}
+              className="mt-3 text-[28px] sm:text-[34px] leading-[1.05] font-semibold tracking-tight text-amber-300 drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)] break-words"
               style={{
+                // "typewriter" feel (monospace) without adding extra font files
                 fontFamily:
-                  "ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif",
-                letterSpacing: "-0.02em",
+                  "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+                letterSpacing: "-0.01em",
               }}
             >
               {repoName}
@@ -172,6 +170,9 @@ function ProjectGridCard({ p, index }: { p: PublicProject; index: number }) {
 export default function ProjectsScroll() {
   const [items, setItems] = React.useState<PublicProject[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => setMounted(true), []);
 
   React.useEffect(() => {
     let cancelled = false;
@@ -192,6 +193,8 @@ export default function ProjectsScroll() {
   }, []);
 
   React.useEffect(() => {
+    if (!mounted) return;
+
     // Track mouse for hover sheen.
     function onMove(e: MouseEvent) {
       const target = e.target as HTMLElement | null;
@@ -205,7 +208,7 @@ export default function ProjectsScroll() {
     }
     window.addEventListener("mousemove", onMove);
     return () => window.removeEventListener("mousemove", onMove);
-  }, []);
+  }, [mounted]);
 
   if (loading) return <div className="text-sm text-zinc-400">Loading projects…</div>;
   if (!items.length) return <div className="text-sm text-zinc-400">No projects yet.</div>;
@@ -214,7 +217,7 @@ export default function ProjectsScroll() {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {items.map((p, idx) => (
         <div key={p.id} className="aspect-square">
-          <ProjectGridCard p={p} index={idx} />
+          <ProjectGridCard p={p} index={idx} mounted={mounted} />
         </div>
       ))}
     </div>
