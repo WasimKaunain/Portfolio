@@ -176,44 +176,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     // Fill missing description/exploreUrl without overwriting admin edits.
-    const results = await prisma.$transaction(
-      upserts.map((q) =>
-        q.then(async (p: Awaited<ReturnType<typeof prisma.project.upsert>>) => {
-          const [owner, repo] = [p.githubOwner, p.githubRepo];
-          if (!owner || !repo) return p;
-          const key = `${owner}/${repo}`;
+    // IMPORTANT: $transaction(array) requires PrismaPromise[] (no `.then()` in the array).
+    const upserted = await prisma.$transaction(upserts);
 
-          const intro = readmeIntro.get(key) ?? null;
-          const homepage = repoByKey.get(key)?.homepage ?? null;
+    // Apply conditional updates AFTER the transaction.
+    await Promise.all(
+      upserted.map(async (p) => {
+        const [owner, repo] = [p.githubOwner, p.githubRepo];
+        if (!owner || !repo) return;
+        const key = `${owner}/${repo}`;
 
-          const updates: Array<Promise<unknown>> = [];
+        const intro = readmeIntro.get(key) ?? null;
+        const homepage = repoByKey.get(key)?.homepage ?? null;
 
-          if (intro) {
-            updates.push(
-              prisma.project.updateMany({
-                where: { id: p.id, description: "" },
-                data: { description: intro },
-              })
-            );
-          }
+        const updates: Array<ReturnType<typeof prisma.project.updateMany>> = [];
 
-          if (homepage) {
-            updates.push(
-              prisma.project.updateMany({
-                where: { id: p.id, exploreUrl: null },
-                data: { exploreUrl: homepage },
-              })
-            );
-          }
+        if (intro) {
+          updates.push(
+            prisma.project.updateMany({
+              where: { id: p.id, description: "" },
+              data: { description: intro },
+            })
+          );
+        }
 
-          if (updates.length) await Promise.all(updates);
-          return p;
-        })
-      )
+        if (homepage) {
+          updates.push(
+            prisma.project.updateMany({
+              where: { id: p.id, exploreUrl: null },
+              data: { exploreUrl: homepage },
+            })
+          );
+        }
+
+        if (updates.length) await prisma.$transaction(updates);
+      })
     );
 
     await writeApiLog(req, res, 200);
-    return res.status(200).json({ ok: true, count: results.length });
+    return res.status(200).json({ ok: true, count: upserted.length });
   } catch {
     await writeApiLog(req, res, 500);
     return res.status(500).json({ ok: false, error: "internal_error" });

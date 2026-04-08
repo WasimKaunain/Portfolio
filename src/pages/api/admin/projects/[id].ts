@@ -22,26 +22,27 @@ const patchSchema = z
       .optional(),
     title: z.string().min(1).max(120).optional(),
 
-    // allow clearing description from the UI ("" -> null)
+    // NOTE: DB column is non-nullable; treat "" as "no update".
     description: z
       .preprocess(
         (val) => {
-          if (val === "") return null;
+          if (val === "") return undefined;
           return val;
         },
-        z.string().min(1).max(500).nullable().optional()
-      ),
+        z.string().min(1).max(500).optional()
+      )
+      .optional(),
 
     tech: z.array(z.string().min(1).max(40)).max(50).optional(),
     hidden: z.boolean().optional(),
 
-    // allow clearing explore URL from the UI ("" -> null)
+    // NOTE: DB column is non-nullable or you don't want to clear it here; treat "" as "no update".
     exploreUrl: z.preprocess(
       (val) => {
-        if (val === "") return null;
+        if (val === "") return undefined;
         return val;
       },
-      z.string().url().nullable().optional()
+      z.string().url().optional()
     ),
   })
   .strict();
