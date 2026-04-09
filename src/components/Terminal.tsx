@@ -46,7 +46,8 @@ export default function Terminal() {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    inputRef.current?.focus();
+    // Don't steal focus on initial load. Only focus when the user interacts.
+    // (Autofocus can cause the browser to scroll directly to the terminal.)
   }, []);
 
   useEffect(() => {
@@ -315,6 +316,8 @@ doom                - (temporary) UI chaos
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="w-full rounded-2xl bg-black/55 border border-white/10 p-4 md:p-5 text-sm font-mono text-zinc-200 shadow-[0_18px_80px_-45px_rgba(0,0,0,0.9)]"
+      onMouseDown={() => inputRef.current?.focus()}
+      onTouchStart={() => inputRef.current?.focus()}
     >
       <div className="flex items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">

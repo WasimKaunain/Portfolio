@@ -52,7 +52,7 @@ export default function TopNav() {
 					<a
 						data-gravity-item="1"
 						href="#home"
-						className="shrink-0 font-mono text-[11px] sm:text-xs text-zinc-300 hover:text-white transition"
+						className="hidden sm:inline-flex shrink-0 font-mono text-[11px] sm:text-xs text-zinc-300 hover:text-white transition"
 					>
 						wasim.dev
 					</a>

@@ -9,23 +9,24 @@ const defaultRoles = [
   "System Engineer",
 ];
 
-function useTypewriterLoop(
-  words: string[],
+// Replace per-side loops with a single synced controller.
+function useSyncedSplitTypewriter(
+  roles: string[],
   opts?: { speedMs?: number; pauseMs?: number; enabled?: boolean }
 ) {
   const speedMs = opts?.speedMs ?? 65;
   const pauseMs = opts?.pauseMs ?? 900;
   const enabled = opts?.enabled ?? true;
 
-  const [wordIndex, setWordIndex] = React.useState(0);
+  const [roleIndex, setRoleIndex] = React.useState(0);
   const [subIndex, setSubIndex] = React.useState(0);
   const [deleting, setDeleting] = React.useState(false);
 
   React.useEffect(() => {
     if (!enabled) return;
-    if (!words.length) return;
+    if (!roles.length) return;
 
-    const full = words[wordIndex % words.length] ?? "";
+    const full = roles[roleIndex % roles.length] ?? "";
     const atEnd = subIndex === full.length;
     const atStart = subIndex === 0;
 
@@ -41,7 +42,7 @@ function useTypewriterLoop(
       } else {
         if (atStart) {
           setDeleting(false);
-          setWordIndex((v) => (v + 1) % words.length);
+          setRoleIndex((v) => (v + 1) % roles.length);
           return;
         }
         setSubIndex((v) => v - 1);
@@ -49,11 +50,13 @@ function useTypewriterLoop(
     }, delay);
 
     return () => window.clearTimeout(t);
-  }, [enabled, words, wordIndex, subIndex, deleting, speedMs, pauseMs]);
+  }, [enabled, roles, roleIndex, subIndex, deleting, speedMs, pauseMs]);
 
-  if (!enabled) return "";
-  const full = words[wordIndex % words.length] ?? "";
-  return full.slice(0, subIndex);
+  const text = enabled ? (roles[roleIndex % roles.length] ?? "").slice(0, subIndex) : "";
+
+  // Always return both parts computed from the SAME text slice => perfectly synced.
+  const parts = splitRole(text);
+  return { leftText: parts.left, rightText: parts.right };
 }
 
 function splitRole(role: string) {
@@ -76,18 +79,17 @@ export default function AboutShowcase({ bgSrc = "/hero_pic.jpg" }: Props) {
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
 
-  const leftWords = React.useMemo(() => defaultRoles.map((r) => splitRole(r).left), []);
-  const rightWords = React.useMemo(() => defaultRoles.map((r) => splitRole(r).right), []);
-
-  // Always call hooks; only enable animation after mount to keep SSR markup stable.
-  const leftText = useTypewriterLoop(leftWords, { enabled: mounted });
-  const rightText = useTypewriterLoop(rightWords, { enabled: mounted });
+  const { leftText, rightText } = useSyncedSplitTypewriter(defaultRoles, { enabled: mounted });
 
   return (
     <section id="about" className="relative min-h-[100svh] overflow-hidden">
       {/* single full-bleed image */}
       <div aria-hidden className="absolute inset-0">
-        <img src={bgSrc} alt="" className="h-full w-full object-cover" />
+        <img
+          src={bgSrc}
+          alt=""
+          className="h-full w-full object-cover object-[47%_center] lg:object-center"
+        />
         {/* keep image visible but add readability */}
         <div className="absolute inset-0 bg-black/35" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/70" />
@@ -136,6 +138,21 @@ export default function AboutShowcase({ bgSrc = "/hero_pic.jpg" }: Props) {
                   </motion.span>
                 ) : null}
               </div>
+            </div>
+
+            {/* MOBILE Hero Name Overlay */}
+            <div className="lg:hidden absolute top-0 left-0 w-full z-20 px-6 pt-24 pointer-events-none">
+              <h1 className="w-full text-center font-bold tracking-tight leading-[1.05] text-[clamp(36px,11vw,72px)]">
+
+                <span className="text-gray-400 drop-shadow-[0_6px_20px_rgba(0,0,0,0.7)]">
+                  WASIM
+                </span>{" "}
+
+                <span className="text-gray-400 drop-shadow-[0_6px_20px_rgba(0,0,0,0.7)]">
+                  KONAIN
+                </span>
+
+              </h1>
             </div>
 
             {/* MOBILE roles (below image) */}
