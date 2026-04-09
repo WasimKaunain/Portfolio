@@ -3,9 +3,9 @@ import TopNav from "@/components/TopNav";
 import HeroFull from "@/components/HeroFull";
 import ProjectsScroll from "@/components/ProjectsScroll";
 import ExperienceSection from "@/components/ExperienceSection";
-import ContactSection from "@/components/ContactSection";
 import GitHubHeatmap from "@/components/GitHubHeatmap";
 import Terminal from "@/components/Terminal";
+import ContactSection from "@/components/ContactSection";
 import ClientOnly from "../components/ClientOnly";
 
 export default function Home() {

@@ -35,6 +35,43 @@ function getPreviewImageSrc(exploreUrl?: string | null) {
   }
 }
 
+function IconLink(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M10 13a5 5 0 0 1 0-7l1.5-1.5a5 5 0 0 1 7 7L17 13" />
+      <path d="M14 11a5 5 0 0 1 0 7L12.5 19.5a5 5 0 0 1-7-7L7 11" />
+    </svg>
+  );
+}
+
+function IconGlobe(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18" />
+      <path d="M12 3c2.8 3.2 4.2 6.2 4.2 9s-1.4 5.8-4.2 9c-2.8-3.2-4.2-6.2-4.2-9S9.2 6.2 12 3z" />
+    </svg>
+  );
+}
+
 function ProjectGridCard({
   p,
   index,
@@ -66,7 +103,7 @@ function ProjectGridCard({
     >
       {/* deployed preview image layer */}
       {previewSrc ? (
-        <div aria-hidden className="absolute inset-0">
+        <div aria-hidden className="absolute inset-0 pointer-events-none">
           <img
             src={previewSrc}
             alt=""
@@ -80,20 +117,18 @@ function ProjectGridCard({
       ) : null}
 
       {/* colorful glow (sits above preview) */}
-      <div aria-hidden className="absolute inset-0 opacity-[0.75]">
+      <div aria-hidden className="absolute inset-0 opacity-[0.75] pointer-events-none">
         <div className={`absolute -left-24 -top-24 h-60 w-60 rounded-full blur-3xl ${accent.a}`} />
         <div className={`absolute -right-24 -bottom-24 h-60 w-60 rounded-full blur-3xl ${accent.b}`} />
         <div className="absolute inset-0 bg-gradient-to-b from-white/6 via-transparent to-black/25" />
       </div>
 
-      <div className="relative p-6 sm:p-7 flex flex-col h-full">
+      <div className="relative z-10 p-6 sm:p-7 flex flex-col h-full">
         {/* header */}
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <div className="text-[11px] text-zinc-200/70 font-mono">
-              {String(index + 1).padStart(2, "0")} ·{" "}
-              {p.githubOwner && p.githubRepo ? `${p.githubOwner}/${p.githubRepo}` : p.slug}
-            </div>
+            {/* remove the small meta line (index + owner/repo) */}
+
             <h3
               className="mt-3 text-[28px] sm:text-[34px] leading-[1.05] font-semibold tracking-tight text-amber-300 drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)] break-words"
               style={{
@@ -107,18 +142,8 @@ function ProjectGridCard({
             </h3>
           </div>
 
-          <div className="shrink-0 flex items-center gap-2">
-            {githubHref ? (
-              <a
-                href={githubHref}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-xl border border-white/12 bg-black/35 px-3 py-2 text-[11px] font-mono text-white/85 hover:text-white hover:bg-white/10 transition"
-              >
-                Source ↗
-              </a>
-            ) : null}
-          </div>
+          {/* Remove top-right text link area (icons live in footer now) */}
+          <div className="shrink-0" />
         </div>
 
         {/* body */}
@@ -140,28 +165,53 @@ function ProjectGridCard({
         ) : null}
 
         {/* footer */}
-        <div className="mt-auto pt-6 flex items-center justify-between gap-3">
+        <div className="mt-auto pt-6 flex items-end justify-between gap-3">
           <div className="text-[11px] text-white/55">Deployed preview</div>
 
-          {p.exploreUrl ? (
-            <a
-              href={p.exploreUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/14 bg-white/10 px-4 py-2 text-xs text-white hover:bg-white/14 transition"
-            >
-              Explore <span className="text-white/80">↗</span>
-            </a>
-          ) : (
-            <div className="text-[11px] text-white/55">No explore link</div>
-          )}
+          <div className="flex items-center gap-2 relative z-20">
+            {githubHref ? (
+              <a
+                href={githubHref}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Open source on GitHub"
+                title="Source"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/14 bg-black/35 text-white/85 hover:text-white hover:bg-white/12 transition"
+              >
+                <IconLink className="h-5 w-5" />
+              </a>
+            ) : null}
+
+            {p.exploreUrl ? (
+              <a
+                href={p.exploreUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Open live demo"
+                title="Explore"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/14 bg-white/10 text-white hover:bg-white/14 transition"
+              >
+                <IconGlobe className="h-5 w-5" />
+              </a>
+            ) : (
+              <button
+                type="button"
+                aria-label="No live demo"
+                title="No explore link"
+                disabled
+                className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/35 cursor-not-allowed"
+              >
+                <IconGlobe className="h-5 w-5" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
       {/* subtle hover sheen */}
       <div
         aria-hidden
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 [background:radial-gradient(700px_circle_at_var(--x,50%)_var(--y,20%),rgba(255,255,255,0.12),transparent_55%)]"
+        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 [background:radial-gradient(700px_circle_at_var(--x,50%)_var(--y,20%),rgba(255,255,255,0.12),transparent_55%)]"
       />
     </motion.article>
   );

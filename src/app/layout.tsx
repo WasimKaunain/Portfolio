@@ -31,8 +31,12 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col dark:bg-black">
         <ThemeProvider>
-          {children}
-          <TerminalEffects />
+          <div className="relative z-10">{children}</div>
+
+          {/* Effects: stay behind app and never intercept clicks */}
+          <div aria-hidden className="pointer-events-none fixed inset-0 z-0">
+            <TerminalEffects />
+          </div>
         </ThemeProvider>
         {/* ...existing code... */}
       </body>

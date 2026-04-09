@@ -46,6 +46,7 @@ export default function EditProjectClient({ id }: { id: string }) {
   const [loading, setLoading] = React.useState(true);
   const [saving, setSaving] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [savedMsg, setSavedMsg] = React.useState<string | null>(null);
 
   const [title, setTitle] = React.useState("");
   const [slug, setSlug] = React.useState("");
@@ -80,6 +81,7 @@ export default function EditProjectClient({ id }: { id: string }) {
   async function save() {
     setSaving(true);
     setError(null);
+    setSavedMsg(null);
     try {
       await fetchJson<{ project: Project }>(`/api/admin/projects/${id}`, {
         method: "PATCH",
@@ -92,9 +94,17 @@ export default function EditProjectClient({ id }: { id: string }) {
             .map((t) => t.trim())
             .filter(Boolean),
           hidden,
-          exploreUrl: exploreUrl.trim().length ? exploreUrl.trim() : null,
+          // PATCH schema treats "" as "no update"; don't send null.
+          exploreUrl: exploreUrl.trim(),
         }),
       });
+
+      setSavedMsg("Saved successfully.");
+
+      // Give a quick visual confirmation, then return to list.
+      window.setTimeout(() => {
+        window.location.href = "/private-admin/projects";
+      }, 450);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed");
     } finally {
@@ -123,6 +133,7 @@ export default function EditProjectClient({ id }: { id: string }) {
   return (
     <div>
       {error ? <div className="mb-4 text-sm text-red-300">{error}</div> : null}
+      {savedMsg ? <div className="mb-4 text-sm text-emerald-300">{savedMsg}</div> : null}
 
       <form
         className="grid grid-cols-1 gap-4"
