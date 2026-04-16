@@ -14,7 +14,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(405).json({ ok: false, error: "method_not_allowed" });
     }
 
-    const ok = hasVaultReveal(req, env.VAULT_REVEAL_SIGNING_SECRET);
+    // If signing secret isn't configured, treat as locked (and avoid passing undefined to hasVaultReveal)
+    const ok = env.VAULT_REVEAL_SIGNING_SECRET
+      ? hasVaultReveal(req, env.VAULT_REVEAL_SIGNING_SECRET)
+      : false;
+
     await writeApiLog(req, res, 200);
     return res.status(200).json({ ok: true, unlocked: ok });
   } catch {

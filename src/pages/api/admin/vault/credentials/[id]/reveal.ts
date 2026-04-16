@@ -39,7 +39,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ ok: false, error: "invalid_id" });
     }
 
-    if (!hasVaultReveal(req, env.VAULT_REVEAL_SIGNING_SECRET)) {
+    // If signing secret isn't configured, treat as locked.
+    if (!env.VAULT_REVEAL_SIGNING_SECRET || !hasVaultReveal(req, env.VAULT_REVEAL_SIGNING_SECRET)) {
       await writeApiLog(req, res, 403);
       return res.status(403).json({ ok: false, error: "vault_locked" });
     }
