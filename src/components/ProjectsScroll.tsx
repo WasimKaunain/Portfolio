@@ -24,15 +24,75 @@ const accents = [
   { a: "bg-green-400/16", b: "bg-yellow-300/12" },
 ];
 
-function getPreviewImageSrc(exploreUrl?: string | null) {
-  if (!exploreUrl) return null;
-  try {
-    const u = new URL(exploreUrl);
-    // WordPress mShots: simple, no key. Works for most public URLs.
-    return `https://s0.wp.com/mshots/v1/${encodeURIComponent(u.href)}?w=1200`;
-  } catch {
-    return null;
-  }
+type SlideDirection = "x" | "y";
+
+type SlideMode = {
+  axis: SlideDirection;
+  // Left->Right when axis=x, Top->Bottom when axis=y
+  forward: true;
+};
+
+function getSlideModeByIndex(index: number): SlideMode {
+  // Alternate / mix patterns across cards.
+  // You can tweak this to map specific projects if you want.
+  const mode = index % 3;
+  if (mode === 0) return { axis: "x", forward: true }; // left -> right
+  if (mode === 1) return { axis: "y", forward: true }; // top -> bottom
+  return { axis: "y", forward: true }; // bottom -> top is handled by reversed ordering below
+}
+
+function getLocalPreviewImages(repoOrTitle: string | null | undefined): string[] {
+  if (!repoOrTitle) return [];
+  const folder = repoOrTitle.trim();
+  if (!folder) return [];
+
+  // NOTE: Next.js can't list /public at runtime on the client.
+  // So we keep a small manifest here that maps folder -> images.
+  // Add new projects by dropping images into /public/<RepoName>/ and updating this map.
+  const manifest: Record<string, string[]> = {
+    AttendanceManager: ["attendance1.png", "attendance2.png", "attendance3.png"],
+    "Bplustree-Database": ["bplus1.png", "bplus2.png", "bplus3.png", "bplus4.png"],
+    CozyCornerCafe: ["coffee1.png", "coffee2.png", "coffee3.png"],
+    "Masjide-Abubakr": ["masjid1.png", "masjid2.png", "masjid3.png"],
+    Portfolio: ["portfolio1.png", "portfolio2.png", "portfolio3.png"],
+    checkinout: ["checkinout1.png", "checkinout2.png", "checkinout3.png", "checkinout4.png"],
+  };
+
+  const files = manifest[folder];
+  if (!files?.length) return [];
+  return files.map((f) => `/${encodeURIComponent(folder)}/${encodeURIComponent(f)}`);
+}
+
+function useCarouselIndex(
+  length: number,
+  enabled: boolean,
+  intervalMs = 3000,
+  startOffsetMs = 0,
+) {
+  const [idx, setIdx] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!enabled) return;
+    if (length <= 1) return;
+
+    // Make each card start at a different time so they don't all change together.
+    let intervalId: number | undefined;
+    const timeoutId = window.setTimeout(() => {
+      setIdx((v) => (v + 1) % length);
+      intervalId = window.setInterval(() => setIdx((v) => (v + 1) % length), intervalMs);
+    }, Math.max(0, startOffsetMs));
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      if (intervalId) window.clearInterval(intervalId);
+    };
+  }, [enabled, length, intervalMs, startOffsetMs]);
+
+  React.useEffect(() => {
+    if (idx >= length) setIdx(0);
+  }, [idx, length]);
+
+  return idx;
 }
 
 function IconLink(props: React.SVGProps<SVGSVGElement>) {
@@ -92,7 +152,16 @@ function ProjectGridCard({
         ? `https://github.com/${p.githubOwner}/${p.githubRepo}`
         : null;
 
-  const previewSrc = getPreviewImageSrc(p.exploreUrl);
+  const localPreviews = getLocalPreviewImages(p.githubRepo ?? p.title);
+
+  // Stagger each card so they don't all switch at the same time.
+  // Using index keeps it stable across renders.
+  const activeIdx = useCarouselIndex(localPreviews.length, mounted, 3000, (index % 10) * 250);
+
+  // Mix slide directions across cards.
+  const slideMode = getSlideModeByIndex(index);
+  const order: "normal" | "reverse" = index % 3 === 2 ? "reverse" : "normal";
+  const orderedPreviews = order === "reverse" ? [...localPreviews].reverse() : localPreviews;
 
   return (
     <motion.article
@@ -101,15 +170,32 @@ function ProjectGridCard({
       transition={{ duration: 0.55, ease: "easeOut" }}
       className="group relative h-full w-full overflow-hidden rounded-[28px] border border-white/10 bg-white/4 backdrop-blur-xl shadow-[0_25px_120px_-70px_rgba(0,0,0,0.95)]"
     >
-      {/* deployed preview image layer */}
-      {previewSrc ? (
+      {/* local preview carousel (direction varies per card; always loops in the same direction) */}
+      {orderedPreviews.length ? (
         <div aria-hidden className="absolute inset-0 pointer-events-none">
-          <img
-            src={previewSrc}
-            alt=""
-            className="h-full w-full object-cover opacity-[0.9] scale-[1.02] group-hover:scale-[1.06] transition-transform duration-700"
-            loading="lazy"
-          />
+          <div
+            className={
+              slideMode.axis === "x"
+                ? "h-full w-full flex transition-transform duration-700 ease-out"
+                : "h-full w-full flex flex-col transition-transform duration-700 ease-out"
+            }
+            style={
+              slideMode.axis === "x"
+                ? { transform: `translateX(${activeIdx * 100}%)` }
+                : { transform: `translateY(${activeIdx * 100}%)` }
+            }
+          >
+            {orderedPreviews.map((src) => (
+              <img
+                key={src}
+                src={src}
+                alt=""
+                className="h-full w-full shrink-0 object-cover opacity-[0.92]"
+                loading="lazy"
+              />
+            ))}
+          </div>
+
           {/* dark overlay for readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/75" />
           <div className="absolute inset-0 [background:radial-gradient(900px_circle_at_30%_10%,rgba(255,255,255,0.10),transparent_55%)]" />
