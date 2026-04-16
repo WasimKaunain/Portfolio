@@ -32,6 +32,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ ok: false, error: "invalid_body" });
     }
 
+    if (!env.VAULT_REVEAL_PASSWORD_HASH || !env.VAULT_REVEAL_SIGNING_SECRET) {
+      await writeApiLog(req, res, 500);
+      return res.status(500).json({ ok: false, error: "vault_env_missing" });
+    }
+
     const attempted = sha256Hex(parsed.data.password);
     if (attempted !== env.VAULT_REVEAL_PASSWORD_HASH) {
       await writeApiLog(req, res, 403);
