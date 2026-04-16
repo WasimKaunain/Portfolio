@@ -6,7 +6,11 @@ import { env } from "@/lib/env";
 
 function getKey(): Buffer {
   // Must be 32+ chars; we derive a 32-byte key.
-  return crypto.createHash("sha256").update(env.DATA_ENCRYPTION_KEY).digest();
+  // `env.DATA_ENCRYPTION_KEY` is optional at type-level (to allow running the app without vault configured),
+  // but vault endpoints must hard-fail if it isn't provided.
+  const k = env.DATA_ENCRYPTION_KEY;
+  if (!k) throw new Error("Missing DATA_ENCRYPTION_KEY (required for Deployment Vault encryption)");
+  return crypto.createHash("sha256").update(k).digest();
 }
 
 export type EncryptedPayload = {
