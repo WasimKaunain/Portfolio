@@ -9,7 +9,7 @@ export default async function PrivateAdminPage() {
   return (
     <AdminShell
       title="Private Admin"
-      subtitle="Owner-only control panel (billing, logs, projects, config)."
+      subtitle="Owner-only control panel (projects, vault, logs, config)."
       right={
         <div className="text-xs text-zinc-400">
           Signed in as{" "}
@@ -24,16 +24,16 @@ export default async function PrivateAdminPage() {
         >
           <div className="text-sm font-semibold">Projects</div>
           <div className="mt-1 text-sm text-zinc-400">
-            Create/edit projects and publish updates.
+            Public portfolio projects (create, edit, publish).
           </div>
         </Link>
         <Link
-          href="/private-admin/billing"
+          href="/private-admin/vault"
           className="block p-5 rounded-xl bg-black/20 border border-white/8 hover:bg-black/30 transition"
         >
-          <div className="text-sm font-semibold">Billing</div>
+          <div className="text-sm font-semibold">Deployment Vault</div>
           <div className="mt-1 text-sm text-zinc-400">
-            Usage tracking, cost estimation, alerts.
+            Private deployed-projects vault (credentials, APIs, hosting, limits).
           </div>
         </Link>
         <Link

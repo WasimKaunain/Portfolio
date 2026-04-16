@@ -45,6 +45,13 @@ export const env = createEnv({
     // Optional: Contact form email delivery (Resend). Leave unset to disable server-side sending.
     RESEND_API_KEY: optionalNonEmptyString,
     CONTACT_TO_EMAIL: z.string().email().optional(),
+
+    // Deployment Vault (encrypted secrets)
+    // Allow unset in dev so the rest of the app can run without vault configured yet.
+    // Vault-related endpoints should still hard-fail if these are missing.
+    DATA_ENCRYPTION_KEY: optionalNonEmptyString,
+    VAULT_REVEAL_PASSWORD_HASH: optionalNonEmptyString,
+    VAULT_REVEAL_SIGNING_SECRET: optionalNonEmptyString,
   },
   client: {},
   runtimeEnv: {
@@ -60,6 +67,9 @@ export const env = createEnv({
     UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     CONTACT_TO_EMAIL: process.env.CONTACT_TO_EMAIL,
+    DATA_ENCRYPTION_KEY: process.env.DATA_ENCRYPTION_KEY,
+    VAULT_REVEAL_PASSWORD_HASH: process.env.VAULT_REVEAL_PASSWORD_HASH,
+    VAULT_REVEAL_SIGNING_SECRET: process.env.VAULT_REVEAL_SIGNING_SECRET,
   },
   skipValidation: process.env.NODE_ENV === "test",
 });

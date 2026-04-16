@@ -1,11 +1,19 @@
 import { PrismaClient } from "@prisma/client";
 
-const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+// Avoid keeping an old PrismaClient instance across HMR when schema/models change.
+// Otherwise TypeScript may compile but the running dev server can still use an outdated client.
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient; prismaSchemaVersion?: string };
+
+const schemaVersion = "deployment-vault-v1";
 
 export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-  });
+  globalForPrisma.prismaSchemaVersion === schemaVersion && globalForPrisma.prisma
+    ? globalForPrisma.prisma
+    : new PrismaClient({
+        log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+      });
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+  globalForPrisma.prismaSchemaVersion = schemaVersion;
+}

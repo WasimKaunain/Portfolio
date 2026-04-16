@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const nav = [
 	{ href: "/private-admin", label: "Overview" },
 	{ href: "/private-admin/projects", label: "Projects" },
-	{ href: "/private-admin/billing", label: "Billing" },
+	{ href: "/private-admin/vault", label: "Deployment Vault" },
 	{ href: "/private-admin/logs", label: "API Logs" },
 	{ href: "/private-admin/config", label: "Config" },
 ];

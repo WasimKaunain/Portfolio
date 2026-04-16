@@ -32,7 +32,48 @@ model Project {
   // Public "Explore" button (deployment URL controlled from admin)
   exploreUrl  String?
 
+  // Private deployment vault (optional)
+  deploymentVault DeploymentVaultProject?
+
   @@unique([githubOwner, githubRepo])
+}
+
+model DeploymentVaultProject {
+  id            String   @id @default(cuid())
+  projectId     String   @unique
+  project       Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  status        String   @default("live") // live | paused | archived
+  productionUrl String?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  credentials   VaultCredential[]
+}
+
+model VaultCredential {
+  id             String   @id @default(cuid())
+  vaultProjectId String
+  vaultProject   DeploymentVaultProject @relation(fields: [vaultProjectId], references: [id], onDelete: Cascade)
+
+  label          String   // e.g. "Mapbox token", "Cloudflare R2 key"
+  kind           String   // api_key | upi | card | account | db | hosting | other
+  provider       String?  // mapbox | cloudflare | vercel | neon | etc
+
+  // Non-secret context fields
+  identifier     String?  // email/username/accountId
+  metaJson       String?  // JSON string for flexible provider fields (limits, notes, etc.)
+
+  // Encrypted secret payload (AES-GCM)
+  secretEnc      String?  // base64(ciphertext)
+  secretIv       String?  // base64(iv)
+  secretTag      String?  // base64(authTag)
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([vaultProjectId])
 }
 
 model BillingRecord {
