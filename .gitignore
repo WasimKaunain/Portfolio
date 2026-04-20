@@ -11,9 +11,13 @@
 !.yarn/versions
 .vscode
 .next
+/venv
 
 # testing
 /coverage
+structures.txt
+/graphify-out
+.github
 
 # next.js
 /.next/

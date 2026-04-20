@@ -322,10 +322,14 @@ export default function TerminalEffects() {
   }, []);
 
   React.useEffect(() => {
-    function onEffect(e: Event) {
-      const ce = e as CustomEvent<{ effect: string }>;
-      const effect = ce.detail?.effect;
-      if (!effect) return;
+    function onEffect(evt: Event) {
+      const e = evt as CustomEvent<{ effect?: string } & Record<string, unknown>>;
+      const effect = String(e.detail?.effect ?? "");
+
+      if (process.env.NODE_ENV !== "production") {
+        // eslint-disable-next-line no-console
+        console.log("[TerminalEffects] effect:", effect, e.detail);
+      }
 
       setLastEffect(effect);
 
@@ -576,12 +580,12 @@ function GravityLayer({ enabled, doom }: { enabled: boolean; doom: boolean }) {
           >
             <motion.div
               className="absolute inset-0"
-              animate={{ rotate: [0, 1.2, -0.8, 0.5, 0] }}
+              animate={{ rotate: [0, 1.8, -1.2, 0.8, 0] }}
               transition={{ duration: 0.55, repeat: 6, ease: "easeInOut" }}
             />
             <motion.div
-              className="absolute inset-0 bg-red-500/6"
-              animate={{ opacity: [0.0, 0.45, 0.1, 0.35, 0.0] }}
+              className="absolute inset-0 bg-red-500/12"
+              animate={{ opacity: [0.0, 0.7, 0.15, 0.55, 0.0] }}
               transition={{ duration: 0.6, repeat: 5, ease: "easeInOut" }}
             />
           </motion.div>
@@ -594,11 +598,12 @@ function GravityLayer({ enabled, doom }: { enabled: boolean; doom: boolean }) {
 function MatrixLayer({ enabled }: { enabled: boolean }) {
   if (!enabled) return null;
   return (
-    <div className="pointer-events-none fixed inset-0 z-[55] opacity-60 mix-blend-screen">
-      <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_50%_85%,rgba(34,197,94,0.12),transparent_60%)]" />
-      <div className="absolute inset-0 [background-image:linear-gradient(to_bottom,rgba(34,197,94,0.20),transparent_40%,rgba(34,197,94,0.10)),repeating-linear-gradient(90deg,rgba(34,197,94,0.10)_0px,rgba(34,197,94,0.10)_1px,transparent_1px,transparent_10px)] animate-[matrix_2.4s_linear_infinite]" />
+    <div className="pointer-events-none fixed inset-0 z-[55] opacity-90 mix-blend-screen">
+      <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_50%_85%,rgba(34,197,94,0.28),transparent_62%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(1200px_circle_at_50%_20%,rgba(34,197,94,0.12),transparent_60%)]" />
+      <div className="absolute inset-0 [background-image:linear-gradient(to_bottom,rgba(34,197,94,0.40),transparent_35%,rgba(34,197,94,0.18)),repeating-linear-gradient(90deg,rgba(34,197,94,0.22)_0px,rgba(34,197,94,0.22)_1px,transparent_1px,transparent_10px)] animate-[matrix_1.8s_linear_infinite]" />
       <style>{`
-        @keyframes matrix { from { background-position: 0 0, 0 0; } to { background-position: 0 140px, 0 0; } }
+        @keyframes matrix { from { background-position: 0 0, 0 0; } to { background-position: 0 220px, 0 0; } }
       `}</style>
     </div>
   );
@@ -607,8 +612,9 @@ function MatrixLayer({ enabled }: { enabled: boolean }) {
 function ScanlinesLayer({ enabled }: { enabled: boolean }) {
   if (!enabled) return null;
   return (
-    <div className="pointer-events-none fixed inset-0 z-[56] opacity-35 mix-blend-overlay">
-      <div className="absolute inset-0 [background-image:repeating-linear-gradient(to_bottom,rgba(255,255,255,0.18)_0px,rgba(255,255,255,0.18)_1px,transparent_2px,transparent_5px)]" />
+    <div className="pointer-events-none fixed inset-0 z-[56] opacity-55 mix-blend-overlay">
+      <div className="absolute inset-0 [background-image:repeating-linear-gradient(to_bottom,rgba(255,255,255,0.28)_0px,rgba(255,255,255,0.28)_1px,transparent_2px,transparent_6px)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(900px_circle_at_50%_50%,rgba(255,255,255,0.10),transparent_62%)]" />
     </div>
   );
 }
@@ -620,13 +626,14 @@ function GlitchBurst({ burst }: { burst: number }) {
       <motion.div
         key={burst}
         initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 1, 0.4, 0] }}
+        animate={{ opacity: [0, 1, 0.65, 0] }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.55 }}
+        transition={{ duration: 0.6 }}
         className="pointer-events-none fixed inset-0 z-[70]"
       >
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(99,102,241,0.15),rgba(217,70,239,0.12))] mix-blend-screen" />
-        <div className="absolute inset-0 [filter:url(#noise)] opacity-50" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(99,102,241,0.28),rgba(217,70,239,0.22))] mix-blend-screen" />
+        <div className="absolute inset-0 bg-[radial-gradient(1000px_circle_at_50%_40%,rgba(255,255,255,0.08),transparent_60%)] mix-blend-overlay" />
+        <div className="absolute inset-0 [filter:url(#noise)] opacity-60" />
         <svg width="0" height="0">
           <filter id="noise">
             <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />

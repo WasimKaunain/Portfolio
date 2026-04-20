@@ -101,6 +101,8 @@ doom                - (temporary) UI chaos
     const input = raw.trim();
     if (!input) return;
 
+    const cmd = input.toLowerCase();
+
     setHistory((h) => [...h, input]);
     setHistIdx(-1);
 
@@ -111,19 +113,19 @@ doom                - (temporary) UI chaos
       return;
     }
 
-    if (input === "help") {
+    if (cmd === "help") {
       push(input, <pre className="whitespace-pre-wrap">{helpText}</pre>);
       setBuf("");
       return;
     }
 
-    if (input === "clear") {
+    if (cmd === "clear") {
       setLines([]);
       setBuf("");
       return;
     }
 
-    if (input === "whoami") {
+    if (cmd === "whoami") {
       push(
         input,
         <div>
@@ -135,13 +137,13 @@ doom                - (temporary) UI chaos
       return;
     }
 
-    if (input === "now") {
+    if (cmd === "now") {
       push(input, <div className="text-zinc-200 font-mono">{new Date().toString()}</div>);
       setBuf("");
       return;
     }
 
-    if (input === "theme") {
+    if (cmd === "theme") {
       window.dispatchEvent(new CustomEvent("toggle-theme"));
       push(input, <div>Theme toggled.</div>);
       setBuf("");
@@ -161,7 +163,7 @@ doom                - (temporary) UI chaos
       return;
     }
 
-    if (input === "copy email") {
+    if (cmd === "copy email") {
       try {
         await navigator.clipboard.writeText("wasimkonain@gmail.com");
         push(input, <div>Copied: wasimkonain@gmail.com</div>);
@@ -172,7 +174,7 @@ doom                - (temporary) UI chaos
       return;
     }
 
-    if (input === "projects") {
+    if (cmd === "projects") {
       push(input, <div className="text-zinc-400">Loading…</div>);
       setBuf("");
       try {
@@ -230,50 +232,57 @@ doom                - (temporary) UI chaos
       return;
     }
 
+    if (cmd === "reset") {
+      emit("reset");
+      push(input, <div>Reset complete.</div>);
+      setBuf("");
+      return;
+    }
+
     // fun commands (UI effects are handled by a page-level listener)
-    if (input === "gravity") {
+    if (cmd === "gravity") {
       emit("gravity:drop");
       push(input, <div>Gravity event: DROP.</div>);
       setBuf("");
       return;
     }
 
-    if (input === "ungrounded") {
+    if (cmd === "ungrounded" || cmd === "ungravity" || cmd === "gravity off") {
       emit("gravity:off");
       push(input, <div>Gravity restored.</div>);
       setBuf("");
       return;
     }
 
-    if (input === "matrix") {
+    if (cmd === "matrix" || cmd === "matrix on" || cmd === "matrix off") {
       emit("matrix:toggle");
       push(input, <div>Matrix mode toggled.</div>);
       setBuf("");
       return;
     }
 
-    if (input === "scanlines") {
+    if (cmd === "scanlines" || cmd === "scanline" || cmd === "crt" || cmd === "crt scanlines") {
       emit("scanlines:toggle");
       push(input, <div>CRT scanlines toggled.</div>);
       setBuf("");
       return;
     }
 
-    if (input === "glitch") {
+    if (cmd === "glitch" || cmd === "gl1tch") {
       emit("glitch");
       push(input, <div>gl1tch.exe executed</div>);
       setBuf("");
       return;
     }
 
-    if (input === "confetti") {
+    if (cmd === "confetti" || cmd === "party") {
       emit("confetti");
       push(input, <div>Approved. 🎉</div>);
       setBuf("");
       return;
     }
 
-    if (input === "doom") {
+    if (cmd === "doom" || cmd === "chaos") {
       emit("doom");
       push(input, <div>DOOM mode engaged (temporary).</div>);
       setBuf("");
