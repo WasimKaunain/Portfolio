@@ -93,3 +93,28 @@ model ApiLog {
   status    Int
   createdAt DateTime @default(now())
 }
+
+model VisitorEvent {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // What page was viewed
+  path      String
+
+  // Best-effort client info
+  referrer  String?
+  tz        String?
+  lang      String?
+
+  // Best-effort network info
+  ip        String?
+  userAgent String?
+
+  // Coarse geo injected by hosting provider (e.g. Vercel). Null locally.
+  country   String?
+  region    String?
+  city      String?
+
+  @@index([createdAt])
+  @@index([country])
+}

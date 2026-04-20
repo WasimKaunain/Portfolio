@@ -7,6 +7,8 @@ import GitHubHeatmap from "@/components/GitHubHeatmap";
 import Terminal from "@/components/Terminal";
 import ContactSection from "@/components/ContactSection";
 import ClientOnly from "../components/ClientOnly";
+import VisitorTrack from "@/components/VisitorTrack";
+import FooterVisitorStats from "@/components/FooterVisitorStats";
 
 export default function Home() {
   return (
@@ -19,6 +21,7 @@ export default function Home() {
       </div>
 
       <TopNav />
+      <VisitorTrack />
 
       <main>
         <HeroFull />
@@ -87,6 +90,8 @@ export default function Home() {
             <ContactSection />
           </div>
         </ClientOnly>
+
+        <FooterVisitorStats />
       </main>
     </div>
   );
