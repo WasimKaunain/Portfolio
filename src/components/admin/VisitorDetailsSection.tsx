@@ -52,9 +52,9 @@ export default function VisitorDetailsSection() {
     }
   }, []);
 
-  React.useEffect(() => {
-    if (items.length === 0 && !loading) void load();
-  }, [items.length, loading, load]);
+    React.useEffect(() => {
+    void load();
+    }, []);
 
   return (
     <section className="mt-10">

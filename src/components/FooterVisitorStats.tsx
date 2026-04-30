@@ -2,10 +2,7 @@ import React from "react";
 
 async function getVisitorCount(): Promise<number | null> {
   try {
-    const res = await fetch(
-      "/api/visitor/stats",
-      { next: { revalidate: 60 } }
-    );
+    const res = await fetch("/api/visitor/stats?take=1",{ cache: "no-store" });
     const data = await res.json();
     return typeof data.total === "number" ? data.total : null;
   } catch {
