@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
 import { requireOwner } from "@/lib/adminAuth";
-import VisitorDetailsSection from "@/components/admin/VisitorDetailsSection";
+import VisitorDetailsSectionClient from "@/components/admin/VisitorDetailsSectionClient";
 
 export default async function PrivateAdminPage() {
   const session = await requireOwner();
@@ -56,7 +56,7 @@ export default async function PrivateAdminPage() {
           </div>
         </Link>
       </div>
-      <VisitorDetailsSection />
+      <VisitorDetailsSectionClient />
     </AdminShell>
   );
 }
