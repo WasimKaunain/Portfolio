@@ -3,7 +3,7 @@ import React from "react";
 async function getVisitorCount(): Promise<number | null> {
   try {
     const res = await fetch(
-      process.env.NEXT_PUBLIC_SITE_URL + "/api/visitor/stats",
+      "/api/visitor/stats",
       { next: { revalidate: 60 } }
     );
     const data = await res.json();
