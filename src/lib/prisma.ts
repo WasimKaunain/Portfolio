@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 // Otherwise TypeScript may compile but the running dev server can still use an outdated client.
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient; prismaSchemaVersion?: string };
 
-const schemaVersion = "deployment-vault-v1";
+const schemaVersion = "visitor-events-v1";
 
 export const prisma =
   globalForPrisma.prismaSchemaVersion === schemaVersion && globalForPrisma.prisma

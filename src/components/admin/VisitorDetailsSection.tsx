@@ -12,13 +12,17 @@ type Item = {
   ip: string | null;
 };
 
-type StatsResponse = {
-  ok: boolean;
-  total: number;
-  items: Item[];
-  nextCursor: string | null;
-  error?: string;
-};
+type StatsResponse =
+  | {
+      ok: true;
+      total: number;
+      items: Item[];
+      nextCursor: string | null;
+    }
+  | {
+      ok: false;
+      error: string;
+    };
 
 export default function VisitorDetailsSection() {
   const [loading, setLoading] = React.useState(false);
@@ -40,7 +44,13 @@ export default function VisitorDetailsSection() {
 
       const res = await fetch(`/api/visitor/stats?${qs.toString()}`, { cache: "no-store" });
       const data = (await res.json()) as StatsResponse;
-      if (!res.ok || !data.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
+
+      if (!res.ok) {
+        throw new Error((data as any)?.error ?? `Request failed (${res.status})`);
+      }
+      if (!data.ok) {
+        throw new Error(data.error ?? "Request failed");
+      }
 
       setNextCursor(data.nextCursor);
       setItems((prev) => (cursor ? [...prev, ...data.items] : data.items));
@@ -52,9 +62,10 @@ export default function VisitorDetailsSection() {
     }
   }, []);
 
-    React.useEffect(() => {
+  // Load once on mount (avoids fetch loops when API returns empty list).
+  React.useEffect(() => {
     void load();
-    }, []);
+  }, [load]);
 
   return (
     <section className="mt-10">

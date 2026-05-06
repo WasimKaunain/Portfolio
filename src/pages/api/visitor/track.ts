@@ -18,7 +18,6 @@ function getIp(req: NextApiRequest) {
   return req.socket.remoteAddress ?? null;
 }
 
-// Minimal server-side "geolocation": based on the edge/cdn-added headers if present.
 function getGeo(req: NextApiRequest) {
   const country = (req.headers["x-vercel-ip-country"] as string | undefined) ?? null;
   const region = (req.headers["x-vercel-ip-country-region"] as string | undefined) ?? null;
@@ -26,8 +25,6 @@ function getGeo(req: NextApiRequest) {
   return { country, region, city };
 }
 
-// NOTE: This endpoint is public and intentionally best-effort.
-// We only store anonymized-ish data (IP + coarse geo from CDN headers).
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).json({ ok: false, error: "method_not_allowed" });
 
@@ -39,7 +36,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const ua = (req.headers["user-agent"] as string | undefined) ?? null;
     const { country, region, city } = getGeo(req);
 
-    // Prisma client may not yet include this model in editor typings depending on schema cache.
     const prismaAny = prisma as unknown as {
       visitorEvent: {
         create: (args: any) => Promise<any>;
@@ -61,8 +57,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     return res.status(200).json({ ok: true });
-  } catch {
-    // Never break the public page if logging fails.
-    return res.status(200).json({ ok: true });
+  } catch (err) {
+    console.error("/api/visitor/track failed", err);
+    return res.status(500).json({ ok: false, error: "internal_error" });
   }
 }
