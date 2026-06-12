@@ -73,6 +73,10 @@ export default function TopNav() {
 	const [contactOpen, setContactOpen] = React.useState(false);
 
 	React.useEffect(() => {
+  console.log("contactOpen =", contactOpen);
+}, [contactOpen]);
+
+	React.useEffect(() => {
 		setMounted(true);
 	}, []);
 
@@ -129,7 +133,7 @@ export default function TopNav() {
 				<div className="flex items-center justify-center gap-3 rounded-2xl border border-white/10 bg-black/35 backdrop-blur-xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-2xl">
 
 					<nav className="w-full">
-						<div className="flex items-center justify-between sm:justify-center sm:gap-2 overflow-x-auto whitespace-nowrap [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+						<div className="flex w-full items-center justify-between sm:justify-center sm:gap-2 overflow-x-auto white-space-nowrap [-webkit-overflow-scrolling:touch] scrollbar-width-none [&::-webkit-scrollbar]:hidden">
 							{links.map((l) => {
 								const isActive = active === l.href;
 								return (
@@ -171,8 +175,6 @@ export default function TopNav() {
 								<div
 									data-contact-root
 									className="relative shrink-0"
-									onMouseEnter={() => setContactOpen(true)}
-									onMouseLeave={() => setContactOpen(false)}
 								>
 									<button
 										type="button"
@@ -181,9 +183,9 @@ export default function TopNav() {
 									>
 										Links
 									</button>
-
+									
 									<div
-										className={`absolute right-0 top-full mt-2 w-72 rounded-2xl border border-white/10 ring-1 ring-white/5 bg-[#090b11]/95  backdrop-blur-xl shadow-[0_25px_80px_rgba(0,0,0,0.55)] overflow-hidden transition duration-150 z-[310] ${
+										className={`fixed top-20 right-4 w-72 rounded-2xl border border-white/10 ring-1 ring-white/5 bg-[#090b11]/95  backdrop-blur-xl shadow-[0_25px_80px_rgba(0,0,0,0.55)] overflow-hidden transition duration-150 z-[310] ${
 											contactOpen
 												? "opacity-100 translate-y-0 pointer-events-auto"
 												: "opacity-0 translate-y-1 pointer-events-none"
