@@ -53,9 +53,10 @@ function getLocalPreviewImages(repoOrTitle: string | null | undefined): string[]
     AttendanceManager: ["attendance1.png", "attendance2.png", "attendance3.png"],
     "Bplustree-Database": ["bplus1.png", "bplus2.png", "bplus3.png", "bplus4.png"],
     CozyCornerCafe: ["coffee1.png", "coffee2.png", "coffee3.png"],
-    "Masjide-Abubakr": ["masjid1.png", "masjid2.png", "masjid3.png"],
+    "Masjid-e-Abubakr": ["masjid1.png", "masjid2.png", "masjid3.png"],
     Portfolio: ["portfolio1.png", "portfolio2.png", "portfolio3.png"],
     checkinout: ["checkinout1.png", "checkinout2.png", "checkinout3.png", "checkinout4.png"],
+    AttendCrew: ["attendcrew1.png", "attendcrew2.png", "attendcrew3.png", "attendcrew4.png"],
   };
 
   const files = manifest[folder];
