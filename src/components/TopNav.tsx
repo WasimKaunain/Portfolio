@@ -128,18 +128,10 @@ export default function TopNav() {
 			className="fixed top-3 sm:top-4 left-0 right-0 z-[300]"
 		>
 			<div className="max-w-7xl mx-auto px-3 sm:px-6">
-				<div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/35 backdrop-blur-xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-2xl">
-					<a
-						data-gravity-item="1"
-						href="#home"
-						className="hidden sm:inline-flex shrink-0 font-mono text-[11px] sm:text-xs text-zinc-300 hover:text-white transition"
-						onClick={() => onNavClick("#home")}
-					>
-						wasim.dev
-					</a>
+				<div className="flex items-center justify-center gap-3 rounded-2xl border border-white/10 bg-black/35 backdrop-blur-xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-2xl">
 
-					<nav className="flex-1 min-w-0">
-						<div className="flex items-center justify-end gap-1 overflow-x-auto whitespace-nowrap [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+					<nav className="w-full">
+						<div className="flex items-center justify-between sm:justify-center sm:gap-2 overflow-x-auto whitespace-nowrap [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 							{links.map((l) => {
 								const isActive = active === l.href;
 								return (
