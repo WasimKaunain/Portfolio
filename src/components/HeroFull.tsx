@@ -7,7 +7,7 @@ export default function HeroFull() {
   return (
     <section className="relative min-h-[100svh] flex items-center justify-center" id="home">
       <div className="w-full">
-        <AboutShowcase bgSrc="/hero_pic.jpg" />
+        <AboutShowcase bgSrc="/hero_pic.png" />
       </div>
     </section>
   );
