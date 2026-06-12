@@ -140,39 +140,27 @@ export default function AboutShowcase({ bgSrc = "/hero_pic.jpg" }: Props) {
               </div>
             </div>
 
-            {/* MOBILE Hero Name Overlay */}
-            <div className="lg:hidden absolute top-0 left-0 w-full z-20 px-6 pt-24 pointer-events-none">
-              <h1 className="w-full text-center font-bold tracking-tight leading-[1.05] text-[clamp(36px,11vw,72px)]">
+              {/* MOBILE name + roles */}
+              <div className="lg:hidden row-start-2 pb-6">
+                <h1 className="text-center text-[clamp(28px,7vw,56px)] font-light tracking-[0.35em] uppercase text-white/90 mb-4">WASIM KONAIN</h1>
 
-                <span className="text-gray-400 drop-shadow-[0_6px_20px_rgba(0,0,0,0.7)]">
-                  WASIM
-                </span>{" "}
+                <div className="flex items-center justify-center gap-2 font-mono text-xl sm:text-2xl text-white/95">
+                  <span>{leftText || "\u00A0"}</span>
+                  <span className="text-white/60">{rightText ? " " : ""}</span>
+                  <span>{rightText || "\u00A0"}</span>
 
-                <span className="text-gray-400 drop-shadow-[0_6px_20px_rgba(0,0,0,0.7)]">
-                  KONAIN
-                </span>
-
-              </h1>
-            </div>
-
-            {/* MOBILE roles (below image) */}
-            <div className="lg:hidden row-start-2">
-              <div className="flex items-center justify-center gap-2 font-mono text-xl sm:text-2xl text-white/95">
-                <span>{leftText || "\u00A0"}</span>
-                <span className="text-white/60">{rightText ? " " : ""}</span>
-                <span>{rightText || "\u00A0"}</span>
-                {mounted ? (
-                  <motion.span
-                    aria-hidden
-                    className="inline-block ml-1 text-white/70"
-                    animate={{ opacity: [0, 1, 0] }}
-                    transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                    |
-                  </motion.span>
-                ) : null}
+                  {mounted ? (
+                    <motion.span
+                      aria-hidden
+                      className="inline-block ml-1 text-white/70"
+                      animate={{ opacity: [0, 1, 0] }}
+                      transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      |
+                    </motion.span>
+                  ) : null}
+                </div>
               </div>
-            </div>
           </div>
         </div>
       </div>
