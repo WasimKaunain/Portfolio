@@ -8,6 +8,7 @@ const links = [
 	{ href: "#terminal", label: "Terminal" },
 	{ href: "#projects", label: "Projects" },
 	{ href: "#experience", label: "Experience" },
+	{ href: "#contact", label: "Contact" },
 ];
 
 function IconMail(props: React.SVGProps<SVGSVGElement>) {
@@ -49,23 +50,20 @@ function IconLinkedIn(props: React.SVGProps<SVGSVGElement>) {
 	);
 }
 
-function IconDownload(props: React.SVGProps<SVGSVGElement>) {
-	return (
-		<svg
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			strokeWidth="1.8"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-			aria-hidden="true"
-			{...props}
-		>
-			<path d="M12 3v10" />
-			<path d="m8 11 4 4 4-4" />
-			<path d="M4 20h16" />
-		</svg>
-	);
+function IconPdf(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      {...props}
+    >
+      <path d="M7 3h7l5 5v13H7z" />
+      <path d="M14 3v5h5" />
+      <path d="M9 16h6" />
+    </svg>
+  );
 }
 
 export default function TopNav() {
@@ -91,7 +89,7 @@ export default function TopNav() {
 	}, [mounted]);
 
 	React.useEffect(() => {
-		const ids = ["home", "terminal", "projects", "experience"];
+		const ids = ["home", "terminal", "projects", "experience", "contact"];
 		const els = ids
 			.map((id) => document.getElementById(id))
 			.filter(Boolean) as HTMLElement[];
@@ -181,42 +179,65 @@ export default function TopNav() {
 										onClick={() => setContactOpen((v) => !v)}
 										className="relative shrink-0 rounded-xl px-2.5 sm:px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs transition border text-zinc-300 border-transparent hover:border-white/10 hover:bg-white/5"
 									>
-										Contact
+										Links
 									</button>
 
 									<div
-										className={`absolute right-0 top-full mt-2 w-56 rounded-2xl border border-white/10 bg-black/70 backdrop-blur-xl shadow-2xl overflow-hidden transition duration-150 z-[310] ${
+										className={`absolute right-0 top-full mt-2 w-72 rounded-2xl border border-white/10 ring-1 ring-white/5 bg-[#090b11]/95  backdrop-blur-xl shadow-[0_25px_80px_rgba(0,0,0,0.55)] overflow-hidden transition duration-150 z-[310] ${
 											contactOpen
 												? "opacity-100 translate-y-0 pointer-events-auto"
 												: "opacity-0 translate-y-1 pointer-events-none"
 										}`}
 									>
 										<a
-											href={emailHref}
-											className="flex items-center gap-3 px-4 py-3 text-sm text-zinc-200 hover:bg-white/8 transition"
-											onClick={() => setContactOpen(false)}
+										  href={emailHref}
+										  className="group flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/5 transition"
 										>
-											<IconMail className="h-4 w-4 text-white/70" />
-											<span>Email</span>
+										  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-500/15 text-red-400">
+										    <IconMail className="h-4 w-4" />
+										  </div>
+
+										  <div>
+										    <div className="text-white">Email</div>
+										    <div className="text-xs text-zinc-500">
+										      wasimkonain@gmail.com
+										    </div>
+										  </div>
 										</a>
+
 										<a
-											href={linkedInHref}
-											target="_blank"
-											rel="noreferrer"
-											className="flex items-center gap-3 px-4 py-3 text-sm text-zinc-200 hover:bg-white/8 transition"
-											onClick={() => setContactOpen(false)}
+										  href={linkedInHref}
+										  target="_blank"
+										  rel="noreferrer"
+										  className="group flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/5 transition"
 										>
-											<IconLinkedIn className="h-4 w-4 text-white/70" />
-											<span>LinkedIn</span>
+										  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0A66C2]/15 text-[#0A66C2]">
+										    <IconLinkedIn className="h-4 w-4" />
+										  </div>
+																			
+										  <div>
+										    <div className="text-white">LinkedIn</div>
+										    <div className="text-xs text-zinc-500">
+										      Connect professionally
+										    </div>
+										  </div>
 										</a>
+
 										<a
-											href={resumeHref}
-											download
-											className="flex items-center gap-3 px-4 py-3 text-sm text-zinc-200 hover:bg-white/8 transition"
-											onClick={() => setContactOpen(false)}
+										  href={resumeHref}
+										  download
+										  className="group flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/5 transition"
 										>
-											<IconDownload className="h-4 w-4 text-white/70" />
-											<span>Download resume</span>
+										  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-600/15 text-red-500">
+										    <IconPdf className="h-4 w-4" />
+										  </div>
+
+										  <div>
+										    <div className="text-white">Download Resume</div>
+										    <div className="text-xs text-zinc-500">
+										      PDF format
+										    </div>
+										  </div>
 										</a>
 									</div>
 								</div>

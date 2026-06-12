@@ -86,9 +86,9 @@ export default function Home() {
             <ExperienceSection />
           </div>
 
-          <div data-gravity-item="1">
+          <section id="contact" data-gravity-item="1">
             <ContactSection />
-          </div>
+          </section>
         </ClientOnly>
 
         <FooterVisitorStats />
