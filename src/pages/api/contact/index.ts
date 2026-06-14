@@ -16,45 +16,47 @@ const bodySchema = z
 
 // Fallback limiter when Upstash isn't configured (best-effort; resets on server restart).
 const mem = new Map<string, { count: number; resetAt: number }>();
-function memLimit(key: string, max: number, windowMs: number) {
-  const now = Date.now();
-  const cur = mem.get(key);
-  if (!cur || cur.resetAt < now) {
-    mem.set(key, { count: 1, resetAt: now + windowMs });
+function memLimit(key: string, max: number, windowMs: number) 
+  {
+    const now = Date.now();
+    const cur = mem.get(key);
+    if (!cur || cur.resetAt < now) 
+      {
+        mem.set(key, { count: 1, resetAt: now + windowMs });
+        return { success: true };
+      }
+    if (cur.count >= max) return { success: false };
+    cur.count += 1;
     return { success: true };
   }
-  if (cur.count >= max) return { success: false };
-  cur.count += 1;
-  return { success: true };
-}
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) 
+{
   if (req.method !== "POST") return res.status(405).json({ ok: false, error: "method_not_allowed" });
 
   // Rate limit first
   const ip = String(req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown");
-  if (apiRateLimiter) {
-    const rl = await apiRateLimiter.limit(`contact:${ip}`);
-    if (!rl.success) return res.status(429).json({ ok: false, error: "rate_limited" });
-  } else {
-    const rl = memLimit(`contact:${ip}`, 8, 60_000); // 8/min
-    if (!rl.success) return res.status(429).json({ ok: false, error: "rate_limited" });
-  }
+  if (apiRateLimiter) 
+    {
+      const rl = await apiRateLimiter.limit(`contact:${ip}`);
+      if (!rl.success) return res.status(429).json({ ok: false, error: "rate_limited" });
+    } 
+  else 
+    {
+      const rl = memLimit(`contact:${ip}`, 8, 60_000); // 8/min
+      if (!rl.success) return res.status(429).json({ ok: false, error: "rate_limited" });
+    }
 
   const parsed = bodySchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ ok: false, error: "invalid_body" });
 
   // Honeypot: if filled, act as success to not inform bots.
-  if (parsed.data.companyWebsite && parsed.data.companyWebsite.trim().length > 0) {
-    return res.status(200).json({ ok: true, delivered: false });
-  }
+  if (parsed.data.companyWebsite && parsed.data.companyWebsite.trim().length > 0) {return res.status(200).json({ ok: true, delivered: false });}
 
-  const to = env.CONTACT_TO_EMAIL ?? "wasimkonain@gmail.com";
+  const to = env.CONTACT_TO_EMAIL ?? "ansariw580@gmail.com";
 
   // If Resend isn't configured, we still respond OK so the UI works in local/dev.
-  if (!env.RESEND_API_KEY) {
-    return res.status(200).json({ ok: true, delivered: false });
-  }
+  if (!env.RESEND_API_KEY) {return res.status(200).json({ ok: true, delivered: false });}
 
   const resend = new Resend(env.RESEND_API_KEY);
 
@@ -62,7 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { name, email, message, budget } = parsed.data;
 
     await resend.emails.send({
-      from: "Portfolio Contact <onboarding@resend.dev>",
+      from: "Wasim Konain <contact@wasimkonain.tech>",
       to,
       replyTo: email,
       subject: `New freelance inquiry — ${name}`,
